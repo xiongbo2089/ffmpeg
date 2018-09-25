@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     tools:context="jackma.com.ffmpeg.MainActivity">
 
-    <android.view.SurfaceView
+    <jackma.com.ffmpeg.AutoFitTextureView
         android:id="@+id/surface"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -20,16 +20,24 @@
         android:orientation="horizontal" >
 
         <TextView
+            android:padding="10dp"
             android:id="@+id/btn_push"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:text="开始直播"/>
 
-        <Button
+        <TextView
+            android:padding="10dp"
             android:id="@+id/btn_camera_switch"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:text="切换摄像头"/>
+        <TextView
+            android:padding="10dp"
+            android:id="@+id/take_pic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="拍照"/>
     </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>
