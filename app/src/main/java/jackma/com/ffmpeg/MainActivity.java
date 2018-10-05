@@ -1,27 +1,16 @@
 package jackma.com.ffmpeg;
 
 import android.Manifest;
-import android.hardware.Camera;
 import android.hardware.camera2.CameraCharacteristics;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.SurfaceView;
 import android.view.View;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
 
-import jackma.com.ffmpeg.bean.VideoParam;
-import jackma.com.ffmpeg.util.BitmapUtil;
-import jackma.com.ffmpeg.util.DisplayUtil;
+import jackma.com.ffmpeg.capture.Camera2Helper;
 import jackma.com.ffmpeg.util.PermissionUtils;
 
 public class MainActivity extends AppCompatActivity implements Camera2Helper.AfterDoListener{
@@ -97,36 +86,6 @@ public class MainActivity extends AppCompatActivity implements Camera2Helper.Aft
         });
         mCamera2Helper = Camera2Helper.getInstance(MainActivity.this,textureView,mFile);
         mCamera2Helper.setAfterDoListener(this);
-    }
-
-    @Override
-    public void onAfterPreviewBack() {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                progressBar.setVisibility(View.GONE);
-            }
-        });
-    }
-
-    @Override
-    public void onAfterTakePicture() {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                InputStream input = null;
-                try {
-                    input = new FileInputStream(file);
-                    byte[] byt = new byte[input.available()];
-                    input.read(byt);
-                    imageView.setImageBitmap(BitmapUtil.bytes2Bitmap(byt));
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
     }
 
 }
