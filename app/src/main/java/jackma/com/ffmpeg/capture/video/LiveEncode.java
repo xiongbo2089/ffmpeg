@@ -1,9 +1,7 @@
 package jackma.com.ffmpeg.capture.video;
 
-import android.annotation.TargetApi;
 import android.hardware.Camera;
 import android.media.MediaCodec;
-import android.os.Build;
 import android.util.Log;
 
 import java.io.IOException;
@@ -11,20 +9,20 @@ import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import jackma.com.ffmpeg.capture.Camera2Helper;
+import jackma.com.ffmpeg.capture.CameraHelper;
 import jackma.com.ffmpeg.capture.LiveBuild;
+import jackma.com.ffmpeg.capture.audio.LiveAudioEncode;
 import jackma.com.ffmpeg.capture.audio.LiveAudioGet;
 import jackma.com.ffmpeg.capture.bean.VideoEncodeType;
 
 /**
  */
 
-@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-class LiveEncode {
+public class LiveEncode {
 
     //视频
     private LinkedBlockingQueue<byte[]> videoQueue;
-    private Camera2Helper liveVideo;
+    private CameraHelper liveVideo;
     private LiveVideoEncode liveVideoEncode;
     private Thread videoEncodeThread;
     private boolean videoEncodeStart;
@@ -34,19 +32,16 @@ class LiveEncode {
     private LinkedBlockingQueue<byte[]> audioQueue;
     private Thread audioEncodeThread;
     private boolean audioEncodeStart;
-    private LiveAudioE
-    ncode liveAudioEncode;
-
-
+    private LiveAudioEncode liveAudioEncode;
 
     private LiveBuild build;
     private LiveEncodeListener encodeListener;
 
-    void setEncodeListener(LiveEncodeListener encodeListener) {
+    public void setEncodeListener(LiveEncodeListener encodeListener) {
         this.encodeListener = encodeListener;
     }
 
-    static LiveEncode newInstance(){
+    public static LiveEncode newInstance(){
         return new LiveEncode();
     }
 
@@ -77,8 +72,8 @@ class LiveEncode {
             }
         });
         //视频采集类
-        liveVideo = LiveVideoGet.newInstance();
-        liveVideo.setVideoListener(new LiveVideoGet.LiveVideoListener() {
+        liveVideo = CameraHelper.newInstance();
+        liveVideo.setVideoListener(new CameraHelper.LiveVideoListener() {
             @Override
             public void onPreviewFrame(byte[] data) {
                 try {
@@ -109,19 +104,19 @@ class LiveEncode {
         });
     }
 
-    int getSampleRate(){
+    public int getSampleRate(){
         return liveAudioGet.sampleRate;
     }
 
-    int getChannelConfig(){
+    public int getChannelConfig(){
         return liveAudioGet.channelConfig;
     }
 
-    List<Camera.Size> getCameraSize(){
+    public List<Camera.Size> getCameraSize(){
         return liveVideo.getCameraSize();
     }
 
-    void initEncode(LiveBuild builds) {
+    public void initEncode(LiveBuild builds) {
         this.build = builds;
         liveVideoEncode.initVideoEncode(build);
         try {
@@ -134,7 +129,7 @@ class LiveEncode {
         }
     }
 
-    void startEncode(){
+    public void startEncode(){
         startVideoEncode();
         startAudioEncode();
     }
@@ -190,7 +185,7 @@ class LiveEncode {
         videoEncodeThread.start();
     }
 
-    void releaseEncode(){
+    public void releaseEncode(){
         liveVideo.releaseCamera();
         liveVideoEncode.releaseVideo();
         stopVideoEncode();

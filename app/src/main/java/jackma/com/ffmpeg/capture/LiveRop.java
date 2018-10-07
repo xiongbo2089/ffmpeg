@@ -145,6 +145,7 @@ public class LiveRop implements LiveRopMain {
         }
 
         liveEncode.initEncode(build);
+        liveEncode.startEncode();
     }
 
     @Override

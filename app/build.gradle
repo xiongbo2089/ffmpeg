@@ -9,6 +9,18 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        externalNativeBuild {
+            cmake {
+                cppFlags "-fexceptions"
+                abiFilters "armeabi-v7a"
+                arguments "-DANDROID_PLATFORM=android-9"
+            }
+        }
+
+        ndk {
+            abiFilters  "armeabi-v7a"
+        }
     }
     buildTypes {
         release {
@@ -17,6 +29,17 @@ android {
         }
     }
     buildToolsVersion '27.0.3'
+
+    sourceSets.main {
+        jniLibs.srcDirs = ['libs']
+        jni.srcDirs = []
+    }
+
+    externalNativeBuild {
+        cmake {
+            path "CMakeLists.txt"
+        }
+    }
 }
 
 dependencies {

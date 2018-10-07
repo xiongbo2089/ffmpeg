@@ -20,20 +20,20 @@ public class LiveAudioGet {
     private Thread audioThread;
     private boolean isStart;
     private LiveAudioListener listener;
-    int sampleRate;
-    int channelConfig;
+    public int sampleRate;
+    public int channelConfig;
 
-    void setListener(LiveAudioListener listener) {
+    public void setListener(LiveAudioListener listener) {
         this.listener = listener;
     }
 
-    static LiveAudioGet newInstance(){
+    public static LiveAudioGet newInstance(){
         return new LiveAudioGet();
     }
 
     private LiveAudioGet(){}
 
-    void initAudio(){
+    public void initAudio(){
         int[] sampleRates = {44100, 22050, 16000, 11025};
         for (int sampleRate :sampleRates) {
             //编码制式
@@ -51,7 +51,7 @@ public class LiveAudioGet {
         }
     }
 
-    void startAudio(){
+    public void startAudio(){
         audioThread = new Thread(){
             @Override
             public void run() {
@@ -76,7 +76,7 @@ public class LiveAudioGet {
         audioThread.start();
     }
 
-    void stopAudio(){
+    public void stopAudio(){
         isStart = false;
         if(null != audioThread)
             audioThread.interrupt();
@@ -84,7 +84,7 @@ public class LiveAudioGet {
 //        mAudioRecord.release();
     }
 
-    interface LiveAudioListener{
+    public interface LiveAudioListener{
         void audioRead(byte[] audio);
     }
 

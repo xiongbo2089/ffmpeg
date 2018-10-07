@@ -16,7 +16,7 @@ import static android.media.MediaFormat.KEY_MAX_INPUT_SIZE;
  * date 2017/8/31 17:52
  * 音频硬编码类
  */
-class LiveAudioEncode {
+public class LiveAudioEncode {
 
 
     private MediaCodec aEncoder;
@@ -28,11 +28,11 @@ class LiveAudioEncode {
         this.audioListener = audioListener;
     }
 
-    static LiveAudioEncode newInstance(){
+    public static LiveAudioEncode newInstance(){
         return new LiveAudioEncode();
     }
 
-    void startEncode(){
+    public void startEncode(){
         presentationTimeUs = System.currentTimeMillis() * 1000;
         if(null != aEncoder)
             aEncoder.start();
@@ -45,7 +45,7 @@ class LiveAudioEncode {
      * @param chanelCount 声道数
      * @throws IOException 创建编码器失败
      */
-    void initAudioEncoder(int sampleRate, int chanelCount) throws IOException {
+    public void initAudioEncoder(int sampleRate, int chanelCount) throws IOException {
         MediaCodec aencoder = MediaCodec.createEncoderByType(MediaFormat.MIMETYPE_AUDIO_AAC);
         MediaFormat format = MediaFormat.createAudioFormat(MediaFormat.MIMETYPE_AUDIO_AAC,
                 sampleRate, chanelCount);
@@ -60,7 +60,7 @@ class LiveAudioEncode {
      *
      * @param data
      */
-    void encodeAudioData(byte[] data) {
+    public void encodeAudioData(byte[] data) {
         ByteBuffer[] inputBuffers = aEncoder.getInputBuffers();
         ByteBuffer[] outputBuffers = aEncoder.getOutputBuffers();
         int inputBufferId = aEncoder.dequeueInputBuffer(-1);
@@ -83,7 +83,7 @@ class LiveAudioEncode {
         }
     }
 
-    interface LiveAudioEncodeListener{
+    public interface LiveAudioEncodeListener{
         void audioEncode(ByteBuffer bb, MediaCodec.BufferInfo aBufferInfo);
     }
 }
