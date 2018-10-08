@@ -25,7 +25,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
     private TextView mSrtartPush;
     private TextView mSwitch;
-    private String rtmpPath = "rtmp://ip:192.168.0.2:9009/live";
+    private String rtmpPath;
     private int bitrate = 800;
     private VideoEncodeType mType;
     private CameraHelper mCameraHelper;
@@ -72,6 +72,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         mSrtartPush.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                rtmpPath = "file:/" + Environment.getExternalStorageDirectory().getPath() + "/1/1.mp4";
                 liveRop =  LiveFfmpegManager.build(MainActivity.this)
                         .setHolder(surfaceView.getHolder())
                         .setRtmpUrl(rtmpPath)
@@ -80,6 +81,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                         .setVideoHeight(surfaceView.getHeight())
                         .setBitrate(bitrate*1000);
                 liveRop.initEncode();
+                liveRop.startEncode();
             }
         });
 

@@ -143,9 +143,7 @@ public class LiveRop implements LiveRopMain {
         if(null != nativeInitListener){
             nativeInitListener.initNative(build);
         }
-
         liveEncode.initEncode(build);
-        liveEncode.startEncode();
     }
 
     @Override
