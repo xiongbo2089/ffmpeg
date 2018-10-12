@@ -40,6 +40,7 @@ public class LiveRop implements LiveRopMain {
         liveEncode = LiveEncode.newInstance();
     }
 
+    @Override
     public LiveRop setEncodeListener(LiveEncodeListener encodeListener){
         liveEncode.setEncodeListener(encodeListener);
         return this;

@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadFactory;
 
 import jackma.com.ffmpeg.capture.CameraHelper;
 import jackma.com.ffmpeg.capture.LiveBuild;
@@ -77,7 +78,9 @@ public class LiveEncode {
             @Override
             public void onPreviewFrame(byte[] data) {
                 try {
-                    if (videoEncodeStart) videoQueue.put(data);
+                    if (videoEncodeStart) {
+                        videoQueue.put(data);
+                    }
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -98,8 +101,9 @@ public class LiveEncode {
         liveAudioEncode.setAudioListener(new LiveAudioEncode.LiveAudioEncodeListener() {
             @Override
             public void audioEncode(ByteBuffer bb, MediaCodec.BufferInfo aBufferInfo) {
-                if(null != encodeListener)
-                encodeListener.audioToHard(bb,aBufferInfo);
+                if(null != encodeListener) {
+                    encodeListener.audioToHard(bb,aBufferInfo);
+                }
             }
         });
     }
