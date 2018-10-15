@@ -26,9 +26,6 @@ import static android.media.MediaFormat.KEY_I_FRAME_INTERVAL;
 import static android.media.MediaFormat.KEY_MAX_INPUT_SIZE;
 
 /**
- *
- * @author 邓治民
- * date 2017/8/31 15:27
  * 视频编码
  */
 @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
@@ -81,7 +78,7 @@ class LiveVideoEncode {
      * @throws IOException 创建编码器失败
      */
 
-    int initVideoEncoder(int width, int height, int fps,int bitrate) throws IOException {
+    public int initVideoEncoder(int width, int height, int fps,int bitrate) throws IOException {
         // 初始化
         MediaCodecInfo mediaCodecInfo = getMediaCodecInfoByType(MediaFormat.MIMETYPE_VIDEO_AVC);
         int colorFormat = getColorFormat(mediaCodecInfo);

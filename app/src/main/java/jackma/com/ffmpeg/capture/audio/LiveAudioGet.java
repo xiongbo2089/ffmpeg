@@ -7,8 +7,6 @@ import android.util.Log;
 
 /**
  *
- * @author 邓治民
- * date 2017/8/31 17:33
  * 音频数据采集
  */
 public class LiveAudioGet {

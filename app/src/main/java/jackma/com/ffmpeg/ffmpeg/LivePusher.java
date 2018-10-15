@@ -1,12 +1,6 @@
 package jackma.com.ffmpeg.ffmpeg;
 
-/**
- *
- * @author 邓治民
- * date 2017/9/5 15:39
- */
-
-class LivePusher {
+public class LivePusher {
 
     static {
         System.loadLibrary("native-lib");
@@ -14,7 +8,7 @@ class LivePusher {
 
     private static LivePusher livePush;
 
-    static LivePusher getInscance(){
+    public static LivePusher getInscance(){
         if(null == livePush){
             synchronized (LivePusher.class){
                 if(null == livePush){

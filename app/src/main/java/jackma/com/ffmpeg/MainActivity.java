@@ -1,7 +1,7 @@
 package jackma.com.ffmpeg;
 
 import android.Manifest;
-import android.hardware.camera2.CameraCharacteristics;
+import android.media.MediaCodec;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -10,13 +10,16 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.widget.TextView;
 
-import java.io.File;
+import java.nio.ByteBuffer;
 
 import jackma.com.ffmpeg.capture.CameraHelper;
 import jackma.com.ffmpeg.capture.LiveBuild;
+import jackma.com.ffmpeg.capture.LiveConfig;
 import jackma.com.ffmpeg.capture.LiveRop;
 import jackma.com.ffmpeg.capture.bean.VideoEncodeType;
-import jackma.com.ffmpeg.ffmpeg.LiveFfmpegManager;
+import jackma.com.ffmpeg.capture.listener.LiveNativeInitListener;
+import jackma.com.ffmpeg.capture.video.LiveEncodeListener;
+import jackma.com.ffmpeg.ffmpeg.LivePusher;
 import jackma.com.ffmpeg.util.PermissionUtils;
 
 public class MainActivity extends AppCompatActivity implements SurfaceHolder.Callback {
@@ -72,14 +75,17 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         mSrtartPush.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                rtmpPath = "file:/" + Environment.getExternalStorageDirectory().getPath() + "/1/1.mp4";
-                liveRop =  LiveFfmpegManager.build(MainActivity.this)
+                //rtmpPath = "file:/" + Environment.getExternalStorageDirectory().getPath() + "/1/1.mp4";
+                rtmpPath = "rtmp://192.168.0.4:1935/live";
+                liveRop =  LiveRop.getInstance().build(MainActivity.this)
                         .setHolder(surfaceView.getHolder())
                         .setRtmpUrl(rtmpPath)
                         .setVideoWidth(surfaceView.getWidth())
                         .setVideoEncodeType(mType)
                         .setVideoHeight(surfaceView.getHeight())
                         .setBitrate(bitrate*1000);
+                setEncodeListener();
+
                 liveRop.initEncode();
                 liveRop.startEncode();
             }
@@ -88,6 +94,40 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         mSwitch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+            }
+        });
+    }
+
+    private void setEncodeListener(){
+        liveRop.setEncodeListener(new LiveEncodeListener() {
+            @Override
+            public void videoToYuv420sp(byte[] yuv) {
+                LivePusher.getInscance().addVideo(yuv, LiveConfig.isBack);
+            }
+
+            @Override
+            public void videoToHard(ByteBuffer bb, MediaCodec.BufferInfo info) {
+
+            }
+
+            @Override
+            public void audioToHard(ByteBuffer bb, MediaCodec.BufferInfo info) {
+
+            }
+
+            @Override
+            public void audioToSoft(byte[] data) {
+
+            }
+        }).setNativeInitListener(new LiveNativeInitListener() {
+            @Override
+            public void initNative(LiveBuild build) {
+                LivePusher.getInscance().init(build.getVideoWidth(),build.getVideoHeight(),build.getRtmpUrl());
+            }
+
+            @Override
+            public void releaseNative() {
+
             }
         });
     }

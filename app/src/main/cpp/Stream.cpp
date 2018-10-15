@@ -40,8 +40,9 @@ void Stream::init_ffmpeg(char *rtmp_path, int width, int height) {
     video_st->time_base.den = 25;
     video_st->codec = pEncodeCtx;
 
-    if(avio_open(&pOfmtCtx->pb,rtmp_path,AVIO_FLAG_READ_WRITE) < 0){
-        LOGD("Failed to open output file!\n");
+    int openCode = avio_open(&pOfmtCtx->pb,rtmp_path,AVIO_FLAG_READ_WRITE);
+    if(openCode < 0){
+        LOGD("Failed to open output file! %d !\n" ,openCode);
         return;
     }
 

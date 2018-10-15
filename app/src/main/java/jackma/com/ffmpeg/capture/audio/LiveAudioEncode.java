@@ -12,8 +12,6 @@ import static android.media.MediaFormat.KEY_MAX_INPUT_SIZE;
 
 /**
  *
- * @author 邓治民
- * date 2017/8/31 17:52
  * 音频硬编码类
  */
 public class LiveAudioEncode {
