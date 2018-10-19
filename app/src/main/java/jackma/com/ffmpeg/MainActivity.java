@@ -71,12 +71,48 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                         PermissionUtils.requestPermission(MainActivity.this,Manifest.permission.CAMERA,1);
                     }
                 });
+        PermissionUtils.checkPermission(this, Manifest.permission.RECORD_AUDIO,
+                new PermissionUtils.PermissionCheckCallBack() {
+                    @Override
+                    public void onHasPermission() {
+                        // 已授予权限
+                    }
+
+                    @Override
+                    public void onUserHasAlreadyTurnedDown(String... permission) {
+                        // 上一次申请权限被拒绝，可用于向用户说明权限原因，然后调用权限申请方法。
+                    }
+
+                    @Override
+                    public void onUserHasAlreadyTurnedDownAndDontAsk(String... permission) {
+                        // 第一次申请权限或被禁止申请权限，建议直接调用申请权限方法。
+                        PermissionUtils.requestPermission(MainActivity.this,Manifest.permission.RECORD_AUDIO,1);
+                    }
+                });
+        PermissionUtils.checkPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                new PermissionUtils.PermissionCheckCallBack() {
+                    @Override
+                    public void onHasPermission() {
+                        // 已授予权限
+                    }
+
+                    @Override
+                    public void onUserHasAlreadyTurnedDown(String... permission) {
+                        // 上一次申请权限被拒绝，可用于向用户说明权限原因，然后调用权限申请方法。
+                    }
+
+                    @Override
+                    public void onUserHasAlreadyTurnedDownAndDontAsk(String... permission) {
+                        // 第一次申请权限或被禁止申请权限，建议直接调用申请权限方法。
+                        PermissionUtils.requestPermission(MainActivity.this,Manifest.permission.WRITE_EXTERNAL_STORAGE,1);
+                    }
+                });
 
         mSrtartPush.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //rtmpPath = "file:/" + Environment.getExternalStorageDirectory().getPath() + "/1/1.mp4";
-                rtmpPath = "rtmp://192.168.0.4:1935/live";
+                rtmpPath = "file:/" + Environment.getExternalStorageDirectory().getPath() + "/1/1.mp4";
+                //rtmpPath = "rtmp://192.168.0.4:1935/live";
                 liveRop =  LiveRop.getInstance().build(MainActivity.this)
                         .setHolder(surfaceView.getHolder())
                         .setRtmpUrl(rtmpPath)
