@@ -8,9 +8,8 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadFactory;
 
-import jackma.com.ffmpeg.capture.CameraHelper;
+import jackma.com.ffmpeg.capture.VideoGet;
 import jackma.com.ffmpeg.capture.LiveBuild;
 import jackma.com.ffmpeg.capture.audio.LiveAudioEncode;
 import jackma.com.ffmpeg.capture.audio.LiveAudioGet;
@@ -23,7 +22,7 @@ public class LiveEncode {
 
     //视频
     private LinkedBlockingQueue<byte[]> videoQueue;
-    private CameraHelper liveVideo;
+    private VideoGet liveVideo;
     private LiveVideoEncode liveVideoEncode;
     private Thread videoEncodeThread;
     private boolean videoEncodeStart;
@@ -73,8 +72,8 @@ public class LiveEncode {
             }
         });
         //视频采集类
-        liveVideo = CameraHelper.newInstance();
-        liveVideo.setVideoListener(new CameraHelper.LiveVideoListener() {
+        liveVideo = VideoGet.newInstance();
+        liveVideo.setVideoListener(new VideoGet.LiveVideoListener() {
             @Override
             public void onPreviewFrame(byte[] data) {
                 try {

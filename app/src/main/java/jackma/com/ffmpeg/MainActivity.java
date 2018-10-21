@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import java.nio.ByteBuffer;
 
-import jackma.com.ffmpeg.capture.CameraHelper;
+import jackma.com.ffmpeg.capture.VideoGet;
 import jackma.com.ffmpeg.capture.LiveBuild;
 import jackma.com.ffmpeg.capture.LiveConfig;
 import jackma.com.ffmpeg.capture.LiveRop;
@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
     private String rtmpPath;
     private int bitrate = 800;
     private VideoEncodeType mType;
-    private CameraHelper mCameraHelper;
+    private VideoGet mVideoGet;
     private SurfaceView surfaceView;
     private TextView mTakePic;
     public static final String PHOTO_PATH = Environment.getExternalStorageDirectory().getPath();

@@ -11,7 +11,7 @@ import java.util.List;
 
 import static android.hardware.Camera.Parameters.FOCUS_MODE_AUTO;
 
-public class CameraHelper {
+public class VideoGet {
 
 	private LiveBuild build;
 	private Camera mCamera;
@@ -22,11 +22,11 @@ public class CameraHelper {
 		this.videoListener = videoListener;
 	}
 
-	public static CameraHelper newInstance(){
-		return new CameraHelper();
+	public static VideoGet newInstance(){
+		return new VideoGet();
 	}
 
-	private CameraHelper(){}
+	private VideoGet(){}
 
 	/**
 	 * 初始化视频采集
