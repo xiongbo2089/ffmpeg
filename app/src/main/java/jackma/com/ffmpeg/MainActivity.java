@@ -1,6 +1,13 @@
 package jackma.com.ffmpeg;
 
 import android.Manifest;
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.ImageFormat;
+import android.graphics.Rect;
+import android.graphics.YuvImage;
+import android.hardware.Camera;
 import android.media.MediaCodec;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
@@ -10,7 +17,12 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.widget.TextView;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.util.UUID;
 
 import jackma.com.ffmpeg.capture.VideoGet;
 import jackma.com.ffmpeg.capture.LiveBuild;
@@ -36,6 +48,11 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
     private TextView mTakePic;
     public static final String PHOTO_PATH = Environment.getExternalStorageDirectory().getPath();
     public static final String PHOTO_NAME = "camera2";
+
+    private static final String SD_PATH = "/sdcard/1/pic/";
+    private static final String IN_PATH = "/1/pic/";
+    public  static int abcaaa = 0;
+    public  static  boolean canpic = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -132,13 +149,96 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
             public void onClick(View v) {
             }
         });
+
+        mTakePic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                canpic = true;
+            }
+        });
+    }
+
+        public void runInPreviewFrame(byte[] data, Camera camera) {
+
+            ByteArrayOutputStream baos;
+            byte[] rawImage;
+            Bitmap bitmap;
+            camera.setOneShotPreviewCallback(null);
+            //处理data
+            Camera.Size previewSize = camera.getParameters().getPreviewSize();//获取尺寸,格式转换的时候要用到
+            BitmapFactory.Options newOpts = new BitmapFactory.Options();
+            newOpts.inJustDecodeBounds = true;
+            YuvImage yuvimage = new YuvImage(
+                    data,
+                    ImageFormat.NV21,
+                    previewSize.width,
+                    previewSize.height,
+                    null);
+            baos = new ByteArrayOutputStream();
+            yuvimage.compressToJpeg(new Rect(0, 0, previewSize.width, previewSize.height), 100, baos);// 80--JPG图片的质量[0-100],100最高
+            rawImage = baos.toByteArray();
+            //将rawImage转换成bitmap
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inPreferredConfig = Bitmap.Config.RGB_565;
+            bitmap = BitmapFactory.decodeByteArray(rawImage, 0, rawImage.length, options);
+
+            saveBitmap(this,bitmap);
+        }
+
+    /**
+     * 随机生产文件名
+     *
+     * @return
+     */
+    private static String generateFileName() {
+        return UUID.randomUUID().toString();
+    }
+    /**
+     * 保存bitmap到本地
+     *
+     * @param context
+     * @param mBitmap
+     * @return
+     */
+    public static String saveBitmap(Context context, Bitmap mBitmap) {
+        String savePath;
+        File filePic;
+        if (Environment.getExternalStorageState().equals(
+                Environment.MEDIA_MOUNTED)) {
+            savePath = SD_PATH;
+        } else {
+            savePath = context.getApplicationContext().getFilesDir()
+                    .getAbsolutePath()
+                    + IN_PATH;
+        }
+        try {
+            abcaaa ++;
+            filePic = new File(savePath + generateFileName() + "" + abcaaa  + ".jpg");
+            if (!filePic.exists()) {
+                filePic.getParentFile().mkdirs();
+                filePic.createNewFile();
+            }
+            FileOutputStream fos = new FileOutputStream(filePic);
+            mBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+            fos.flush();
+            fos.close();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            return null;
+        }
+
+        return filePic.getAbsolutePath();
     }
 
     private void setEncodeListener(){
         liveRop.setEncodeListener(new LiveEncodeListener() {
             @Override
-            public void videoToYuv420sp(byte[] yuv) {
+            public void videoToYuv420sp(byte[] yuv, Camera camera) {
                 LivePusher.getInscance().addVideo(yuv, LiveConfig.isBack);
+                if (canpic) {
+                    runInPreviewFrame(yuv, camera);
+                }
             }
 
             @Override
@@ -154,6 +254,10 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
             @Override
             public void audioToSoft(byte[] data) {
 
+            }
+
+            @Override
+            public void pic(byte[] data,Camera camera) {
             }
         }).setNativeInitListener(new LiveNativeInitListener() {
             @Override

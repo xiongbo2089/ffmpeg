@@ -2,6 +2,7 @@ package jackma.com.ffmpeg.capture.video;
 
 import android.annotation.TargetApi;
 import android.graphics.ImageFormat;
+import android.hardware.Camera;
 import android.media.MediaCodec;
 import android.media.MediaCodecInfo;
 import android.media.MediaCodecList;
@@ -141,7 +142,7 @@ class LiveVideoEncode {
         return matchedForamt;
     }
 
-    void encodeData(byte[] data,int colorFormat){
+    void encodeData(byte[] data,int colorFormat,Camera camera){
         if (colorFormat == -1) {
             Yuv420Util.Nv21ToYuv420SP(data, videobytes, build.getVideoWidth(), build.getVideoHeight());
         } else if (colorFormat == MediaCodecInfo.CodecCapabilities.COLOR_FormatYUV420SemiPlanar) {
@@ -169,7 +170,7 @@ class LiveVideoEncode {
             encodeVideoData(videoXZ,data);
         } else {
             if(null != videoListener){
-                videoListener.videoToYuv420(videobytes);
+                videoListener.videoToYuv420(videobytes,camera);
             }
         }
 
@@ -309,11 +310,13 @@ class LiveVideoEncode {
 
     interface OnVideoEncodeListener{
 
-        void videoToYuv420(byte[] yuv);
+        void videoToYuv420(byte[] yuv ,Camera camera);
 
         void videoToHard(ByteBuffer bb, MediaCodec.BufferInfo vBufferInfo);
 
         void addCallbackBuffer(byte[] old);
+
+        void pic(byte[] data,Camera camera);
 
     }
 

@@ -31,7 +31,7 @@ public class VideoGet {
 	/**
 	 * 初始化视频采集
 	 */
-	public void startCamera(LiveBuild builds){
+	public Camera startCamera(LiveBuild builds){
 		this.build = builds;
 		releaseCamera();
 		openCamera();
@@ -50,6 +50,7 @@ public class VideoGet {
 				if(null != bytes){
 					if(null != videoListener){
 						videoListener.onPreviewFrame(bytes);
+						videoListener.pic(bytes,camera);
 					}else{
 						addCallbackBuffer(bytes);
 					}
@@ -60,6 +61,8 @@ public class VideoGet {
 		});
 		addCallbackBuffer(new byte[calculateFraeSize(ImageFormat.NV21)]);
 		mCamera.startPreview();
+
+		return mCamera;
 	}
 
 	public void releaseCamera() {
@@ -154,5 +157,6 @@ public class VideoGet {
 
 	public interface LiveVideoListener{
 		void onPreviewFrame(byte[] data);
+		void pic(byte[] data,Camera camera);
 	}
 }

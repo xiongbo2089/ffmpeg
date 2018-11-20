@@ -36,6 +36,7 @@ public class LiveEncode {
 
     private LiveBuild build;
     private LiveEncodeListener encodeListener;
+    private Camera mCamera;
 
     public void setEncodeListener(LiveEncodeListener encodeListener) {
         this.encodeListener = encodeListener;
@@ -52,9 +53,9 @@ public class LiveEncode {
         liveVideoEncode = LiveVideoEncode.newInstance();
         liveVideoEncode.setVideoListener(new LiveVideoEncode.OnVideoEncodeListener() {
             @Override
-            public void videoToYuv420(byte[] yuv) {
+            public void videoToYuv420(byte[] yuv,Camera camera) {
                 if(null != encodeListener){
-                    encodeListener.videoToYuv420sp(yuv);
+                    encodeListener.videoToYuv420sp(yuv,camera);
                 }
 
             }
@@ -70,6 +71,11 @@ public class LiveEncode {
             public void addCallbackBuffer(byte[] old) {
                 liveVideo.addCallbackBuffer(old);
             }
+
+            @Override
+            public void pic(byte[] data,Camera camera) {
+                encodeListener.pic(data,camera);
+            }
         });
         //视频采集类
         liveVideo = VideoGet.newInstance();
@@ -83,6 +89,11 @@ public class LiveEncode {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
+            }
+
+            @Override
+            public void pic(byte[] data, Camera camera) {
+                encodeListener.pic(data,camera);
             }
         });
         //音频采集
@@ -166,7 +177,7 @@ public class LiveEncode {
     }
 
     private void startVideoEncode(){
-        liveVideo.startCamera(build);
+        mCamera = liveVideo.startCamera(build);
         videoEncodeThread = new Thread() {
             @Override
             public void run() {
@@ -177,7 +188,7 @@ public class LiveEncode {
                     try {
                         Log.d("vedio_queue_size",videoQueue.size()+"");
                         byte[] bytes = videoQueue.take();
-                        liveVideoEncode.encodeData(bytes,colorFormat);
+                        liveVideoEncode.encodeData(bytes,colorFormat,mCamera);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
